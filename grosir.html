@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grosir Pasar Lanang | Portofolio Bisnis</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Playfair+Display:ital,wght=0,700;1,400&display=swap" rel="stylesheet">
+    
+    <!-- Library Animasi Scroll (AOS) -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #10b981;
+            --primary-dark: #059669;
+            --secondary: #1e293b;
+            --bg-light: #f8fafc;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text-dark);
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        /* TRIK UTAMA: SEMBUNYIKAN CHECKBOX */
+        #menu-toggle {
+            display: none;
+        }
+
+        /* NAVBAR - MUTLAK DI ATAS & BEBAS AOS */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 20px 8%;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(12px);
+            z-index: 999999;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+            gap: 25px;
+            pointer-events: auto !important; /* Paksa browser mengizinkan klik */
+        }
+
+        /* TOMBOL HAMBURGER (MENGGUNAKAN <LABEL> AGAR BISA DIKLIK TANPA JS) */
+        .hamburger-menu {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 6px;
+            cursor: pointer;
+            position: relative;
+            z-index: 1000001;
+            pointer-events: auto !important;
+        }
+
+        .hamburger-menu span {
+            display: block;
+            height: 3px;
+            width: 30px;
+            background-color: var(--secondary);
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+
+        /* EFEK BERUBAH JADI 'X' SAAT CHECKBOX DICENTANG */
+        #menu-toggle:checked ~ nav .hamburger-menu span:nth-child(1) {
+            transform: translateY(9px) rotate(45deg);
+            background-color: #ef4444;
+        }
+
+        #menu-toggle:checked ~ nav .hamburger-menu span:nth-child(2) {
+            opacity: 0;
+            width: 0;
+        }
+
+        #menu-toggle:checked ~ nav .hamburger-menu span:nth-child(3) {
+            transform: translateY(-9px) rotate(-45deg);
+            background-color: #ef4444;
+        }
+
+        .logo {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--secondary);
+            user-select: none;
+        }
+
+        .logo span {
+            color: var(--primary);
+            font-style: italic;
+        }
+
+        /* LACI MENU SAMPING (SIDE MENU) */
+        .side-menu {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 320px;
+            height: 100vh;
+            background: #ffffff;
+            box-shadow: 10px 0 30px rgba(0,0,0,0.15);
+            z-index: 1000000;
+            transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+            padding: 120px 30px 40px 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            pointer-events: auto !important;
+        }
+
+        /* KETIKA CHECKBOX DICENTANG, MENU MUNCUL KE KANAN */
+        #menu-toggle:checked ~ .side-menu {
+            left: 0 !important;
+        }
+
+        .side-menu-title {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text-muted);
+            margin-bottom: 10px;
+            font-weight: 700;
+        }
+
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            background: var(--bg-light);
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.2s ease;
+            border: 1px solid rgba(0,0,0,0.02);
+            pointer-events: auto !important; /* Jaminan wajib bisa diklik di HP */
+        }
+
+        .menu-link:hover {
+            background: var(--secondary);
+            color: #ffffff;
+            transform: translateX(5px);
+        }
+
+        .menu-link.bug-report { border-left: 4px solid #ef4444; }
+        .menu-link.bug-report:hover { background: #ef4444; }
+
+        .menu-link.gmaps-review { border-left: 4px solid #34a853; }
+        .menu-link.gmaps-review:hover { background: #34a853; }
+
+        /* OVERLAY BACKGROUND HITAM TRANSPARAN */
+        .menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(15, 23, 42, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 999995;
+            display: none;
+            pointer-events: auto !important;
+        }
+
+        /* KETIKA CHECKBOX DICENTANG, OVERLAY MUNCUL */
+        #menu-toggle:checked ~ .menu-overlay {
+            display: block !important;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 80vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 160px 8% 80px 8%;
+            background: radial-gradient(circle at top, rgba(16, 185, 129, 0.05) 0%, transparent 70%);
+        }
+
+        .tagline {
+            background: rgba(16, 185, 129, 0.1);
+            color: var(--primary-dark);
+            padding: 8px 18px;
+            border-radius: 50px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        .gradient-text {
+            background: linear-gradient(45deg, #10b981, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero p {
+            color: var(--text-muted);
+            font-size: 1.15rem;
+            line-height: 1.8;
+            margin-bottom: 35px;
+            max-width: 750px;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border-radius: 12px;
+            font-weight: 600;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s ease;
+            font-size: 0.95rem;
+            background-color: var(--primary);
+            color: white;
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.2);
+        }
+
+        .btn:hover {
+            background-color: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        /* Kolaborasi Section */
+        .collab-section {
+            background: #ffffff;
+            padding: 80px 8%;
+            text-align: center;
+            border-top: 1px solid #f1f5f9;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .collab-badge {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            display: block;
+            font-weight: 600;
+        }
+
+        .collab-title {
+            font-size: 2.2rem;
+            font-weight: 800;
+            color: var(--secondary);
+            margin-bottom: 20px;
+        }
+
+        .collab-text {
+            max-width: 800px;
+            margin: 0 auto;
+            color: var(--text-muted);
+            line-height: 1.8;
+            font-size: 1.05rem;
+        }
+
+        /* Showcase Kategori */
+        .showcase {
+            padding: 90px 8%;
+        }
+
+        .section-header {
+            margin-bottom: 50px;
+            text-align: center;
+        }
+
+        .section-header h2 {
+            font-size: 2.4rem;
+            color: var(--secondary);
+            font-weight: 800;
+        }
+
+        .grid-layout {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 25px;
+        }
+
+        .showcase-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.02);
+            border: 1px solid rgba(0,0,0,0.04);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .showcase-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary);
+        }
+
+        .card-large-1 { grid-column: span 7; }
+        .card-large-2 { grid-column: span 5; }
+        .card-full { grid-column: span 12; }
+
+        .card-content {
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .card-tag {
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            font-weight: 700;
+            color: var(--primary);
+            letter-spacing: 1px;
+        }
+
+        .card-content h3 {
+            font-size: 1.6rem;
+            color: var(--secondary);
+            font-weight: 700;
+        }
+
+        .card-content p {
+            color: var(--text-muted);
+            font-size: 1rem;
+            line-height: 1.7;
+        }
+
+        /* Social Media Section */
+        .social-section {
+            background-color: var(--secondary);
+            color: white;
+            padding: 80px 8%;
+            text-align: center;
+        }
+
+        .social-section h2 {
+            font-size: 2.2rem;
+            margin-bottom: 15px;
+            font-weight: 800;
+        }
+
+        .social-section p {
+            color: #94a3b8;
+            margin-bottom: 35px;
+            font-size: 1.05rem;
+        }
+
+        /* Coming Soon Tag */
+        .coming-soon-tag {
+            font-size: 1.2rem;
+            font-weight: 800;
+            letter-spacing: 4px;
+            color: #e2e8f0;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 12px 35px;
+            border-radius: 50px;
+            display: inline-block;
+            border: 1px dashed rgba(255, 255, 255, 0.2);
+        }
+
+        /* Footer */
+        footer {
+            background: #0f172a;
+            color: #64748b;
+            padding: 35px 8%;
+            text-align: center;
+            font-size: 0.95rem;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+
+        footer span {
+            color: #f8fafc;
+            font-weight: 600;
+        }
+
+        /* LOGO WHATSAPP MENGAMBANG MUTLAK */
+        .whatsapp-float {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: #25d366;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+            z-index: 1000005;
+            text-decoration: none;
+            transition: transform 0.3s ease;
+            pointer-events: auto !important;
+        }
+
+        .whatsapp-float svg {
+            width: 32px;
+            height: 32px;
+            fill: #ffffff; 
+        }
+
+        .whatsapp-float:hover {
+            transform: scale(1.1);
+            background-color: #20ba5a;
+        }
+
+        /* Breakpoint Screen HP */
+        @media (max-width: 768px) {
+            nav { padding: 15px 5%; gap: 10px; }
+            .hero { padding: 140px 5% 60px 5%; }
+            .hero h1 { font-size: 2.3rem; }
+            .hero p { font-size: 1rem; }
+            .collab-title { font-size: 1.8rem; }
+            .section-header h2 { font-size: 1.9rem; }
+            .card-large-1, .card-large-2, .card-full { grid-column: span 12; }
+            .card-content { padding: 30px 20px; }
+            .whatsapp-float { bottom: 20px; right: 20px; width: 55px; height: 55px; }
+            .whatsapp-float svg { width: 28px; height: 28px; }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SISTEM KONTROL MENU MURNI CSS (TANPA JS JAHANAM) -->
+    <input type="checkbox" id="menu-toggle">
+
+    <!-- Overlay Background -->
+    <label for="menu-toggle" class="menu-overlay"></label>
+
+    <!-- Laci Menu Samping (Slide Out Drawer) -->
+    <div class="side-menu">
+        <p class="side-menu-title">Pilihan Menu</p>
+        
+        <a href="https://wa.me/6282137993029?text=Bug%3A%0AKendala%20Lainya%3A%0AJenis%20Bug%3A" target="_blank" class="menu-link bug-report">
+            Report Bug
+        </a>
+        
+        <a href="https://search.google.com/local/writereview?placeid=ChIJ-6VwGZNx0S0R-7M37R6-G6I" target="_blank" class="menu-link gmaps-review">
+            Ulas Kami Di google maps
+        </a>
+    </div>
+
+    <!-- Navigation Bar -->
+    <nav>
+        <!-- Label ini terhubung ke checkbox di atas, klik ini otomatis buka menu -->
+        <label for="menu-toggle" class="hamburger-menu">
+            <span></span>
+            <span></span>
+            <span></span>
+        </label>
+        
+        <div class="logo">Grosir Pasar<span>Lanang</span></div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="tagline" data-aos="fade-down" data-aos-duration="1000">Official Business Portfolio</div>
+        <h1 data-aos="fade-up" data-aos-duration="1000">Pusat Belanja Grosir <br><span class="gradient-text">Terpercaya & Lengkap</span></h1>
+        <p data-aos="fade-up" data-aos-duration="1200">Menyediakan berbagai macam kebutuhan mulai dari sembako esensial, perlengkapan rumah tangga berkualitas, hingga pakaian modis untuk keluarga Anda dengan harga grosir terbaik.</p>
+        <div data-aos="zoom-in" data-aos-duration="1000">
+            <a href="https://share.google/u8fpkY11oGpUIwhIr" target="_blank" class="btn">
+                Buka Google Maps
+            </a>
+        </div>
+    </section>
+
+    <!-- Kolaborasi Section -->
+    <section class="collab-section" data-aos="fade-up" data-aos-duration="1000">
+        <span class="collab-badge">Strategic Collaboration</span>
+        <h2 class="collab-title">Mereline Garage X Grosir Lanang</h2>
+        <p class="collab-text">
+            Sinergi hebat yang memadukan profesionalitas pelayanan prima dengan ketersediaan produk grosir berkualitas tinggi. Kami berkomitmen memberikan pengalaman berbelanja yang mudah, modern, dan solutif bagi seluruh pelanggan setia.
+        </p>
+    </section>
+
+    <!-- Kategori Produk Section -->
+    <section class="showcase">
+        <div class="section-header" data-aos="fade-up" data-aos-duration="1000">
+            <h2>Kategori Produk Kami</h2>
+        </div>
+
+        <div class="grid-layout">
+            <div class="showcase-card card-large-1" data-aos="fade-up" data-aos-duration="1000">
+                <div class="card-content">
+                    <span class="card-tag">Kebutuhan Pokok</span>
+                    <h3>Sembako Kualitas Premium</h3>
+                    <p>Menyediakan beras, minyak goreng, gula, dan bahan pangan pokok harian dengan jaminan kesegaran barang serta harga grosir yang sangat bersaing untuk kebutuhan toko maupun rumah tangga.</p>
+                </div>
+            </div>
+
+            <div class="showcase-card card-large-2" data-aos="fade-up" data-aos-duration="1200">
+                <div class="card-content">
+                    <span class="card-tag">Home & Living</span>
+                    <h3>Perabotan & Peralatan Rumah Tangga</h3>
+                    <p>Koleksi lengkap solusi perkakas rumah tangga, mulai dari alat dapur estetik hingga perabotan esensial yang awet dan kokoh untuk menunjang kenyamanan rumah Anda.</p>
+                </div>
+            </div>
+
+            <div class="showcase-card card-full" data-aos="fade-up" data-aos-duration="1000">
+                <div class="card-content">
+                    <span class="card-tag">Fashion & Apparel</span>
+                    <h3>Toko Baju & Sandang Keluarga</h3>
+                    <p>Menghadirkan tren pakaian terkini untuk segala usia. Mulai dari pakaian kasual harian hingga busana formal dengan bahan yang nyaman dipakai, potongan modern, tentunya dengan penawaran harga grosir yang menguntungkan bagi reseller.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Media Section -->
+    <section class="social-section">
+        <div data-aos="fade-up" data-aos-duration="1000">
+            <h2>Ikuti Sosial Media Kami</h2>
+            <p>Hubungi dan ikuti perkembangan promo menarik dari platform digital Grosir Pasar Lanang</p>
+        </div>
+
+        <div data-aos="fade-up" data-aos-duration="1200">
+            <div class="coming-soon-tag">COMING SOON</div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2026 Grosir Pasar Lanang. All Rights Reserved. | Web Made By <span>@Edgar_</span></p>
+    </footer>
+
+    <!-- LOGO WHATSAPP MENGAMBANG MURNI SVG (MUTLAK) -->
+    <a href="https://wa.me/6282137993029" target="_blank" class="whatsapp-float" aria-label="Hubungi WhatsApp">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512">
+            <path d="M380.9 97.1C339 55.1 283.2 32 223.9 32c-122.4 0-222 99.6-222 222 0 39.1 10.2 77.3 29.6 111L0 480l117.7-30.9c32.4 17.7 68.9 27 106.1 27h.1c122.3 0 224.1-99.6 224.1-222 0-59.3-25.2-115-67.1-157zm-157 341.6c-33.2 0-65.7-8.9-94-25.7l-6.7-4-69.8 18.3L72 359.2l-4.4-7c-18.5-29.4-28.2-63.3-28.2-98.2 0-101.7 82.8-184.5 184.6-184.5 49.3 0 95.6 19.2 130.4 54.1 34.8 34.9 56.2 81.2 56.1 130.5 0 101.8-84.9 184.6-186.6 184.6zm101.2-138.2c-5.5-2.8-32.8-16.2-37.9-18-5.1-1.9-8.8-2.8-12.5 2.8-3.7 5.6-14.3 18-17.6 21.8-3.2 3.7-6.5 4.2-12 1.4-32.6-16.3-54-29.1-75.5-66-5.7-9.8 5.7-9.1 16.3-30.3 1.8-3.7 .9-6.9-.5-9.7-1.4-2.8-12.5-30.1-17.1-41.2-4.5-10.8-9.1-9.3-12.5-9.5-3.2-.2-6.9-.2-10.6-.2-3.7 0-9.7 1.4-14.8 6.9-5.1 5.6-19.4 19-19.4 46.3 0 27.3 19.9 53.7 22.6 57.4 2.8 3.7 39.1 59.7 94.8 83.8 35.2 15.2 49 16.5 66.6 13.9 10.7-1.6 32.8-13.4 37.4-26.4 4.6-13 4.6-24.1 3.2-26.4-1.3-2.5-5-3.9-10.5-6.6z"/>
+        </svg>
+    </a>
+
+    <!-- Script Library Animasi AOS (Hanya bekerja di konten bawah, tidak menyentuh menu) -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+    <script>
+        AOS.init({
+            once: true,
+            offset: 30
+        });
+    </script>
+</body>
+</html>
